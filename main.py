@@ -70,4 +70,3 @@ def update_student(student_id: int, student: dict):
     return {
         "message": "Student updated successfully"
         }
-#t
