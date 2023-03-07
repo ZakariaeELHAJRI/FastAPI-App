@@ -40,7 +40,6 @@ def get_all_students():
 @app.get("/students/{student_id}")
 def get_student_by_id(student_id: int):
     sql = "SELECT * FROM students WHERE id = %s"
-    #(student_id,) is a tuple with a single element
     val = (student_id,)
     mycursor.execute(sql, val)
     student = mycursor.fetchone()
