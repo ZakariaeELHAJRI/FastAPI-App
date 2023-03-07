@@ -1,61 +1,73 @@
 from fastapi import FastAPI
+import mysql.connector
+
+# create a connection to the database
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="root",
+    database="fastapi-app"
+)
+# create a cursor to execute queries
+mycursor = mydb.cursor()
 
 app = FastAPI()
-# create  simple array of students contanint name , age , department
-students = [
-    {
-        "name": "John",
-        "age": 20,
-        "department": "Computer Science"
-    },
-    {
-        "name": "Jane",
-        "age": 21,
-        "department": "Information Technology"
-    },
-    {
-        "name": "Jack",
-        "age": 22,
-        "department": "Electrical Engineering"
-    }
-]
+
+
 # create a get request to read the root
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
 # create a get request to get all the students
 @app.get("/students")
 def get_all_students():
+    sql = "SELECT * FROM students"
+    mycursor.execute(sql)
+    students = mycursor.fetchall()
     return students # return the array of students
 
 # create a get request to get a student by id
 @app.get("/students/{student_id}")
 def get_student_by_id(student_id: int):
-    return students[student_id]
+    sql = "SELECT * FROM students WHERE id = %s"
+    #(student_id,) is a tuple with a single element
+    val = (student_id,)
+    mycursor.execute(sql, val)
+    student = mycursor.fetchone()
+    return student[student_id]
 
 
 # create a delete request to delete a student by id
 @app.delete("/students/{student_id}")
 def delete_student(student_id: int):
-    students.pop(student_id)
+    sql = "DELETE FROM students WHERE id = %s"
+    val = (student_id,)
+    mycursor.execute(sql, val)
+    mydb.commit()
     return {
-        "message": "Student deleted successfully",
-        "new list ": students
+        "message": "Student deleted successfully"
         }
+
 # create a post request to add a student
 @app.post("/students/add")
 def add_student(student: dict):
-    students.append(student)
+    sql = "INSERT INTO students (name, age, department) VALUES (%s, %s, %s)"
+    val = (student["name"], student["age"], student["department"])
+    mycursor.execute(sql, val)
+    mydb.commit()
     return {
-        "message": "Student added successfully",
-        "new list ": students
+        "message": "Student added successfully"
         }   
+
 # create a put request to update a student by id
 @app.put("/students/{student_id}")
 def update_student(student_id: int, student: dict):
-    students[student_id] = student
+    sql = "UPDATE students SET name = %s, age = %s, department = %s WHERE id = %s"
+    val = (student["name"], student["age"], student["department"], student_id)
+    mycursor.execute(sql, val)
+    mydb.commit()
     return {
-        "message": "Student updated successfully",
-        "new list ": students
+        "message": "Student updated successfully"
         }
 #t
