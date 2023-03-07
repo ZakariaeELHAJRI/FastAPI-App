@@ -1,5 +1,14 @@
 from fastapi import FastAPI
 import mysql.connector
+from pydantic import BaseModel
+
+# create a class to define the structure of the student object
+class Student(BaseModel):
+    name: str
+    age: int
+    department: str
+
+
 
 # create a connection to the database
 mydb = mysql.connector.connect(
@@ -51,9 +60,9 @@ def delete_student(student_id: int):
 
 # create a post request to add a student
 @app.post("/students/add")
-def add_student(student: dict):
+def add_student(student: Student):
     sql = "INSERT INTO students (name, age, department) VALUES (%s, %s, %s)"
-    val = (student["name"], student["age"], student["department"])
+    val = (student.name, student.age, student.department)
     mycursor.execute(sql, val)
     mydb.commit()
     return {
@@ -62,9 +71,9 @@ def add_student(student: dict):
 
 # create a put request to update a student by id
 @app.put("/students/{student_id}")
-def update_student(student_id: int, student: dict):
+def update_student(student_id: int, student: Student):
     sql = "UPDATE students SET name = %s, age = %s, department = %s WHERE id = %s"
-    val = (student["name"], student["age"], student["department"], student_id)
+    val = (student.name, student.age, student.department, student_id)
     mycursor.execute(sql, val)
     mydb.commit()
     return {
