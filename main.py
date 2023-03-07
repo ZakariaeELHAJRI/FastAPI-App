@@ -47,7 +47,7 @@ def get_student_by_id(student_id: int):
 
 
 # create a delete request to delete a student by id
-@app.delete("/students/{student_id}")
+@app.delete("/students/delete/{student_id}")
 def delete_student(student_id: int):
     sql = "DELETE FROM students WHERE id = %s"
     val = (student_id,)
@@ -69,7 +69,7 @@ def add_student(student: Student):
         }   
 
 # create a put request to update a student by id
-@app.put("/students/{student_id}")
+@app.put("/students/update/{student_id}")
 def update_student(student_id: int, student: Student):
     sql = "UPDATE students SET name = %s, age = %s, department = %s WHERE id = %s"
     val = (student.name, student.age, student.department, student_id)
