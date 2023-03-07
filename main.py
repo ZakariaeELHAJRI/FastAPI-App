@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI ,HTTPException
 import mysql.connector
 from pydantic import BaseModel
 
@@ -43,7 +43,9 @@ def get_student_by_id(student_id: int):
     val = (student_id,)
     mycursor.execute(sql, val)
     student = mycursor.fetchone()
-    return student[student_id]
+    if student==None:
+        raise HTTPException(status_code=500, detail="Student not found")
+    return student
 
 
 # create a delete request to delete a student by id
@@ -78,3 +80,5 @@ def update_student(student_id: int, student: Student):
     return {
         "message": "Student updated successfully"
         }
+
+# to run the app, open the terminal and type uvicorn main:app --reload
