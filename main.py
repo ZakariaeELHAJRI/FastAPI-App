@@ -44,7 +44,6 @@ def get_student_by_id(student_id: int):
         raise HTTPException(status_code=500, detail="Student not found")
     return student
 
-
 # create a delete request to delete a student by id
 @app.delete("/students/delete/{student_id}")
 def delete_student(student_id: int):
