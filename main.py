@@ -20,7 +20,6 @@ mycursor = mydb.cursor()
 
 app = FastAPI()
 
-
 # create a get request to read the root
 @app.get("/")
 def read_root():
