@@ -8,8 +8,6 @@ class Student(BaseModel):
     age: int
     department: str
 
-
-
 # create a connection to the database
 mydb = mysql.connector.connect(
     host="localhost",
